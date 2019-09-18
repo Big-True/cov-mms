@@ -1,0 +1,90 @@
+package db
+
+# Covariant Script SQLite DB
+#
+# Licensed under the Covariant Innovation General Public License,
+# Version 1.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://covariant.cn/licenses/LICENSE-1.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Copyright (C) 2019 Covariant Institute
+# Github: https://github.com/covariant-institute/
+
+import sqlite
+import regex
+
+struct record
+    var name=null
+    var type=null
+    var data=null
+    var sql_type=null
+end
+
+struct column
+    var name=null
+    var type=null
+    var data=new string
+end
+
+function table_list(db)
+    var tables=exec(db,"select name from sqlite_master where type=\'table\' order by name")
+    var table_list=new array
+    foreach row in tables
+        foreach col in row
+            table_list.push_back(col.data)
+        end
+    end
+    return move(table_list)
+end
+function column_info(db,table)
+    var info=exec(db,"select sql from sqlite_master where tbl_name = \'"+table+"\' and type=\'table\'")[0][0].data
+    var list=regex.build("^.+\\((.*)\\)$").match(info).str(1).split({','})
+    var res=new array
+    foreach it in list
+        var col=new column
+        var _col=it.split({' ','\t','\n'})
+        col.name=_col[0]
+        col.type=_col[1]
+        res.push_back(move(col))
+    end
+    return move(res)
+end
+
+function exec(db,sql)
+    var data=new array
+    var stmt=db.prepare(sql)
+    stmt.exec()
+    while !stmt.done()
+        var column_count=stmt.column_count()-1
+        var row=new array
+        for i=0,i<=column_count,++i
+            var dat=new record
+            dat.name=stmt.column_name(i)
+            dat.type=stmt.column_decltype(i)
+            dat.sql_type=stmt.column_type(i)
+            switch stmt.column_type(i)
+                case sqlite.integer
+                    dat.data=stmt.column_integer(i)
+                end
+                case sqlite.real
+                    dat.data=stmt.column_real(i)
+                end
+                case sqlite.text
+                    dat.data=stmt.column_text(i)
+                end
+            end
+            row.push_back(dat)
+        end
+        data.push_back(row)
+        stmt.exec()
+    end
+    return data
+end
