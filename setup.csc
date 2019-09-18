@@ -26,12 +26,12 @@ class setup_window
         switch args.size()
             case 1
                 # Setup with no database
-                var act=gcnew ui.base_activity
-                act->title="Covariant MMS Setup"
-                act->on_start.add_listener([](act)->typeid style_color_dark()!=typeid null)
-                var win=gcnew ui.file_explorer
-                win->title="Open File"
-                win->message="Select a database"
+                var act = gcnew ui.base_activity
+                act->title = "Covariant MMS Setup"
+                act->on_start.add_listener([](act) -> (typeid style_color_dark() != typeid null))
+                var win = gcnew ui.file_explorer
+                win->title = "Open File"
+                win->message = "Select a database"
                 win->filters.push_back(".*\\.db")
                 win->fullscreen()
                 win->read_path()
