@@ -65,6 +65,8 @@ struct base_window
             end
         end
         win_fullscreen=true
+        win_flags.push_back(flags.no_resize)
+        win_flags.push_back(flags.no_move)
     end
     
     function is_opened()
