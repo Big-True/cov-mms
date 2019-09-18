@@ -20,6 +20,7 @@
 
 import ui
 using ui.get_raw_handler()
+import imgui_font
 
 class setup_window
     function main(args)
@@ -27,13 +28,13 @@ class setup_window
             case 1
                 # Setup with no database
                 var act = gcnew ui.base_activity
-                act->title = "Covariant MMS Setup"
-                act->on_start.add_listener([](act) -> (typeid style_color_dark() != typeid null))
+                act->title = "智锐科创会员管理系统：设置向导"
+                act->on_start.add_listener([](act) -> (act.default_font=add_font_extend_cn(imgui_font.source_han_sans, 22), style_color_light(), true))
                 var win = gcnew ui.file_explorer
-                win->title = "Open File"
-                win->message = "Select a database"
+                win->title = "打开文件"
+                win->message = "请选择一个数据库文件"
                 win->filters.push_back(".*\\.db")
-                win->fullscreen()
+                #win->fullscreen()
                 win->read_path()
                 win->show()
                 act->add_window(win)

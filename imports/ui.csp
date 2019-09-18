@@ -96,6 +96,7 @@ struct base_activity
     var title = "Picasso Base Activity"
     var window_list = new array
     var geometry = {640,400}
+    var default_font = null
     var enable_menu = false
     var imgui_app = null
     
@@ -124,6 +125,9 @@ struct base_activity
                 return
             end
             imgui_app.prepare()
+            if default_font!=null
+                push_font(default_font)
+            end
             if enable_menu
                 if begin_main_menu_bar()
                     on_menu_present()
@@ -135,6 +139,9 @@ struct base_activity
                 if it->is_opened()
                     it->render(imgui_app)
                 end
+            end
+            if default_font!=null
+                pop_font()
             end
             imgui_app.render()
         end
