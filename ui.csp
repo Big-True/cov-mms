@@ -43,6 +43,7 @@ end
 
 struct base_window
     var win_opened=false
+    var win_fullscreen=false
     var win_flags={flags.no_collapse,flags.always_auto_resize}
     var title="Picasso Base Window"
 
@@ -55,6 +56,16 @@ struct base_window
         win_opened=true
         on_show.activate(this)
     end
+
+    function fullscreen()
+        for it=win_flags.begin(), it!=win_flags.end(), it.forward()
+            if it.data()==flags.always_auto_resize
+                win_flags.erase(it)
+                break
+            end
+        end
+        win_fullscreen=true
+    end
     
     function is_opened()
         return win_opened
@@ -64,10 +75,14 @@ struct base_window
     
     function on_draw(); end
     
-    function render()
+    function render(imgui_app)
         begin_window(title,win_opened,win_flags)
             if !win_opened
                 on_close.activate(win_opened)
+            end
+            if win_fullscreen
+                set_window_size(vec2(imgui_app.get_window_width(), imgui_app.get_window_height()))
+                set_window_pos(vec2(0,0))
             end
             on_layout()
             on_draw()
@@ -116,7 +131,7 @@ struct base_activity
             on_present.activate(this)
             foreach it in window_list
                 if it->is_opened()
-                    it->render()
+                    it->render(imgui_app)
                 end
             end
             imgui_app.render()

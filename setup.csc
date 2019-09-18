@@ -19,12 +19,25 @@
 # Github: https://github.com/covariant-institute/
 
 import ui
+using ui.get_raw_handler()
 
 class setup_window
     function main(args)
         switch args.size()
             case 1
                 # Setup with no database
+                var act=gcnew ui.base_activity
+                act->title="Covariant MMS Setup"
+                act->on_start.add_listener([](act)->typeid style_color_dark()!=typeid null)
+                var win=gcnew ui.file_explorer
+                win->title="Open File"
+                win->message="Select a database"
+                win->filters.push_back(".*\\.db")
+                win->fullscreen()
+                win->read_path()
+                win->show()
+                act->add_window(win)
+                act->start()
             end
             case 2
                 # Setup with exist database
