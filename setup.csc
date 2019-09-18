@@ -1,4 +1,10 @@
-#!/usr/bin/env cs
+#!cs
+#in vs code I have to change first line to auto run this code.
+#And it's a test to test how to fork and pull request XD.
+#File "d:\my programs\cov-mms\setup.csc", line 23
+#        import ui
+#        ^
+#Fatal Error: No such file or directory.
 
 # Covariant Membership Management System: Setup
 #
