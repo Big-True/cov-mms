@@ -194,6 +194,8 @@ struct file_explorer extends base_window
     var path_info = null
     var path_name = null
     var selected = 0
+    var select_button_name = "Select"
+    var cancel_button_name = "Cancel"
     
     function read_path()
         if path[path.size() - 1] != system.path.separator
@@ -261,12 +263,12 @@ struct file_explorer extends base_window
             end
         end
         separator()
-        if menu_item("Select", "", info.type() != system.path.type.dir)
+        if menu_item(select_button_name, "", info.type() != system.path.type.dir)
             this.on_close.activate(path + info.name())
             this.win_opened = false
         end
         separator()
-        if menu_item("Cancel", "", true)
+        if menu_item(cancel_button_name, "", true)
             this.on_close.activate(null)
             this.win_opened = false
         end

@@ -29,10 +29,12 @@ class setup_window
                 # Setup with no database
                 var act = gcnew ui.base_activity
                 act->title = "智锐科创会员管理系统：设置向导"
-                act->on_start.add_listener([](act) -> (act.default_font=add_font_extend_cn(imgui_font.source_han_sans, 22), style_color_light(), true))
+                act->on_start.add_listener([](act) -> (act.default_font = add_font_extend_cn(imgui_font.source_han_sans, 18), style_color_light(), true))
                 var win = gcnew ui.file_explorer
                 win->title = "打开文件"
-                win->message = "请选择一个数据库文件"
+                win->message = "请选择一个SQLite3数据库文件(.db)"
+                win->select_button_name = "选择"
+                win->cancel_button_name = "取消"
                 win->filters.push_back(".*\\.db")
                 #win->fullscreen()
                 win->read_path()
