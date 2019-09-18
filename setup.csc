@@ -23,33 +23,48 @@ using ui.get_raw_handler()
 import imgui_font
 
 class setup_window
+    # Picasso Activity, initialized in function main
+    var act = null
+    # Callback function, DO NOT call directly outside the class!
+    function open_file(path)
+        if typeid path!=typeid string
+            system.exit(0)
+        end
+        # TODO
+        system.out.println(path)
+        return true
+    end
+    # Main Function
     function main(args)
+        # Initialize the activity object
+        act = gcnew ui.base_activity
+        act->title = "智锐科创会员管理系统：设置向导"
+        act->on_start.add_listener([](_act) -> (_act.default_font = add_font_extend_cn(imgui_font.source_han_sans, 18), style_color_light(), true))        
         switch args.size()
             case 1
                 # Setup with no database
-                var act = gcnew ui.base_activity
-                act->title = "智锐科创会员管理系统：设置向导"
-                act->on_start.add_listener([](act) -> (act.default_font = add_font_extend_cn(imgui_font.source_han_sans, 18), style_color_light(), true))
                 var win = gcnew ui.file_explorer
                 win->title = "打开文件"
                 win->message = "请选择一个SQLite3数据库文件(.db)"
                 win->select_button_name = "选择"
                 win->cancel_button_name = "取消"
                 win->filters.push_back(".*\\.db")
+                win->on_close.add_listener(open_file)
                 #win->fullscreen()
                 win->read_path()
                 win->show()
                 act->add_window(win)
-                act->start()
             end
             case 2
                 # Setup with exist database
+                open_file(args.back())
             end
             default
                 system.out.println("Fatal Error: Wrong Command Line Arguments")
                 return -1
             end
         end
+        act->start()
         return 0
     end
 end
